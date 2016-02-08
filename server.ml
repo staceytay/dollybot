@@ -9,16 +9,18 @@ let command_of_string str =
   if str = "dolly" then Dolly
   else failwith "Invalid command"
 
-let handle_update { update_id = uid; message = m; } =
-  match m with
-  | Some m ->
-     begin
-       match m with
-       | Chat _ | Message _ | User _ -> Deferred.unit
+let response_from_update { update_id = _; message = maybe; } =
+  match maybe with
+  | Some msg ->
+     begin match msg.text with
+           | Some text ->
+              let chat_id = (msg.chat).id
+              in let s_msg = { chat_id = chat_id; text = text; }
+              in let response = `String (Telegram_j.string_of_send_message s_msg)
+              in Cohttp_async.Server.respond ~body:response `OK
+           | None -> failwith "No text in update"
      end
-  | None ->
-     Log.Global.info "  handle_update: Empty update...";
-     Deferred.unit
+  | None -> failwith "No message in update"
 
 let run ~port =
   Cohttp_async.Server.create
@@ -30,8 +32,7 @@ let run ~port =
           Cohttp_async.Body.to_string body
           >>= (fun body ->
                Log.Global.info "POST: %s" body;
-               handle_update (Telegram_j.update_of_string body))
-          >>= (fun () -> Cohttp_async.Server.respond `OK)
+               response_from_update (Telegram_j.update_of_string body))
        | _ -> Cohttp_async.Server.respond `Method_not_allowed
     )
   >>= fun _ -> Deferred.never ()
