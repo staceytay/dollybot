@@ -27,7 +27,13 @@ type message = {
     ?text: string option;
 }
 
-type send_message = {
+type photo_reply = {
+    chat_id: chat_id;
+    photo: string;
+    ?caption: string option;
+}
+
+type text_reply = {
     chat_id: chat_id;
     text: string;
 }
