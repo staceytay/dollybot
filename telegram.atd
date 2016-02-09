@@ -1,6 +1,6 @@
 type chat = {
     id: chat_id;
-    chat_type: chat_type;
+    chat_type <json name="type">: chat_type;
     ?title: string option;
     ?username: string option;
     ?first_name: string option;
