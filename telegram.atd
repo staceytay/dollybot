@@ -1,10 +1,10 @@
 type chat = {
-    id: chat_id;
-    chat_type <json name="type">: chat_type;
-    ?title: string option;
-    ?username: string option;
-    ?first_name: string option;
-    ?last_name: string option;
+  id: chat_id;
+  chat_type <json name="type">: chat_type;
+  ?title: string option;
+  ?username: string option;
+  ?first_name: string option;
+  ?last_name: string option;
 }
 
 type chat_id = [
@@ -20,32 +20,32 @@ type chat_type = [
 ]
 
 type message = {
-    message_id: int;
-    ?from: user option;
-    unixtime <json name="date">: int;
-    chat: chat;
-    ?text: string option;
+  message_id: int;
+  ?from: user option;
+  unixtime <json name="date">: int;
+  chat: chat;
+  ?text: string option;
 }
 
 type photo_reply = {
-    chat_id: chat_id;
-    photo: string;
-    ?caption: string option;
+  chat_id: chat_id;
+  photo: string;
+  ?caption: string option;
 }
 
 type text_reply = {
-    chat_id: chat_id;
-    text: string;
+  chat_id: chat_id;
+  text: string;
 }
 
 type update = {
-    update_id: int;
-    ?message: message option;
+  update_id: int;
+  ?message: message option;
 }
 
 type user = {
-    id: int;
-    first_name: string;
-    ?last_name: string option;
-    ?username: string option;
+  id: int;
+  first_name: string;
+  ?last_name: string option;
+  ?username: string option;
 }
