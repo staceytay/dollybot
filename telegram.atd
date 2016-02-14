@@ -1,5 +1,5 @@
 type chat = {
-  id: chat_id;
+  chat_id <json name="id">: chat_id;
   chat_type <json name="type">: chat_type;
   ?title: string option;
   ?username: string option;
@@ -8,8 +8,8 @@ type chat = {
 }
 
 type chat_id = [
-    Id of int
-  | Channel of string
+    Channel of string
+  | Id of int
 ]
 
 type chat_type = [
@@ -19,6 +19,11 @@ type chat_type = [
   | Channel <json name="channel">
 ]
 
+type generic_reply = {
+  response_method <json name="method">: response_method;
+  chat_id: chat_id;
+}
+
 type message = {
   message_id: int;
   ?from: user option;
@@ -27,14 +32,19 @@ type message = {
   ?text: string option;
 }
 
+type response_method = [
+    SendMessage <json name="sendMessage">
+  | SendPhoto <json name="sendPhoto">
+]
+
 type photo_reply = {
-  chat_id: chat_id;
+  inherit generic_reply;
   photo: string;
   ?caption: string option;
 }
 
 type text_reply = {
-  chat_id: chat_id;
+  inherit generic_reply;
   text: string;
 }
 

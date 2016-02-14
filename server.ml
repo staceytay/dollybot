@@ -24,7 +24,8 @@ let response_from_update { update_id = _; message = maybe; } =
         in begin
           match command with
           | Dolly ->
-            let photo_r = { chat_id = msg.chat.id;
+            let photo_r = { response_method = `SendPhoto;
+                            chat_id = msg.chat.chat_id;
                             photo = random_dolly_photo ();
                             caption = None; }
             in let response = `String (string_of_photo_reply photo_r)
