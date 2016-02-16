@@ -29,7 +29,9 @@ let response_from_update { update_id = _; message = maybe; } =
                             photo = random_dolly_photo ();
                             caption = None; }
             in let response = `String (string_of_photo_reply photo_r)
-            in Cohttp_async.Server.respond ~body:response `OK
+            in let headers = Cohttp.Header.of_list [("Content-Type",
+                                                     "application/json")]
+            in Cohttp_async.Server.respond ~headers:headers ~body:response `OK
         end
       | None -> failwith "No text in update"
     end
