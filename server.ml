@@ -39,7 +39,7 @@ let response_from_update { update_id = _; message = maybe; } =
             in Cohttp_async.Server.respond ~headers:headers ~body:response `OK
         end
       | _ ->
-        Log.Global.debug "Unknown message: %s" (string_of_message msg);
+        Log.Global.error "Unknown message: %s" (string_of_message msg);
         Cohttp_async.Server.respond `OK
     end
   | None -> failwith "No message in update"
