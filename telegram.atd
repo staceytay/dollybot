@@ -7,10 +7,8 @@ type chat = {
   ?last_name: string option;
 }
 
-type chat_id = [
-    Channel of string
-  | Id of int
-]
+type json <ocaml module="Yojson.Safe"> = abstract
+type chat_id = json wrap <ocaml module="Chat_id">
 
 type chat_type = [
     Private <json name="private">
