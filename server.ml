@@ -14,9 +14,18 @@ let command_of_string str =
   | "/dolly" -> Dolly
   | _ -> failwith "Invalid command"
 
-let random_dolly_photo () =
-  let dolly_photos = ["<file_id1>"; "<file_id2>"]
-  in List.nth_exn dolly_photos (Random.int (List.length dolly_photos))
+let handle_dolly chat_id args =
+  let photo =
+    match args with
+    | _ -> "AgADBQADyqcxG80qggkuBj1QNJ2NXjdTvjIABG35SEH4FlJfYY0BAAEC"
+  in let photo_r = { response_method = `SendPhoto;
+                     chat_id = chat_id;
+                     photo = photo;
+                     caption = None; }
+  in let response = `String (string_of_photo_reply photo_r)
+  in let headers = Cohttp.Header.of_list [("Content-Type",
+                                           "application/json")]
+  in Cohttp_async.Server.respond ~headers:headers ~body:response `OK
 
 let response_from_update { update_id = _; message = maybe; } =
   match maybe with
@@ -26,17 +35,10 @@ let response_from_update { update_id = _; message = maybe; } =
       | { text = Some text; _ } ->
         let tokens = Str.bounded_split (Str.regexp "[ ]+") text 2
         in let command = command_of_string (List.hd_exn tokens)
+        in let args = List.nth tokens 1
         in begin
           match command with
-          | Dolly ->
-            let photo_r = { response_method = `SendPhoto;
-                            chat_id = msg.chat.chat_id;
-                            photo = random_dolly_photo ();
-                            caption = None; }
-            in let response = `String (string_of_photo_reply photo_r)
-            in let headers = Cohttp.Header.of_list [("Content-Type",
-                                                     "application/json")]
-            in Cohttp_async.Server.respond ~headers:headers ~body:response `OK
+          | Dolly -> handle_dolly msg.chat.chat_id args
         end
       | _ ->
         Log.Global.error "Unknown message: %s" (string_of_message msg);
