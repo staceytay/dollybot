@@ -17,8 +17,8 @@ let response_from_update { update_id = _; message = maybe; } =
   match maybe with
   | Some msg ->
     begin
-      match msg.text with
-      | Some text ->
+      match msg with
+      | { text = Some text; _ } ->
         let tokens = Str.bounded_split (Str.regexp "[ ]+") text 2
         in let command = command_of_string (List.hd_exn tokens)
         in begin
@@ -33,7 +33,9 @@ let response_from_update { update_id = _; message = maybe; } =
                                                      "application/json")]
             in Cohttp_async.Server.respond ~headers:headers ~body:response `OK
         end
-      | None -> failwith "No text in update"
+      | _ ->
+        Log.Global.debug "Unknown message: %s" (string_of_message msg);
+        Cohttp_async.Server.respond `OK
     end
   | None -> failwith "No message in update"
 
