@@ -6,8 +6,13 @@ type command =
   | Dolly
 
 let command_of_string str =
-  if str = "/dolly" then Dolly
-  else failwith "Invalid command"
+  let str =
+    if String.contains str '@'
+    then fst (String.lsplit2_exn str ~on:'@')
+    else str
+  in match str with
+  | "/dolly" -> Dolly
+  | _ -> failwith "Invalid command"
 
 let random_dolly_photo () =
   let dolly_photos = ["<file_id1>"; "<file_id2>"]
